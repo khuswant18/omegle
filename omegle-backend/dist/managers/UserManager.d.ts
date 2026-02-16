@@ -6,7 +6,11 @@ export interface User {
 export declare class UserManager {
     private users;
     private queue;
+    private roomManager;
     constructor();
     addUser(name: string, socket: Socket): void;
+    removeUser(socketId: string): void;
+    clearQueue(): void;
+    initHandlers(socket: Socket): void;
 }
 //# sourceMappingURL=UserManager.d.ts.map
