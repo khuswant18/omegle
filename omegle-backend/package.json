@@ -4,10 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build":"npx tsc -b",
+    "start":"node dist/index.ts",
+    "dev":"npm run build && npm run start" 
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "module",
+  "dependencies": {
+    "socket.io": "^4.8.3"
+  }
 }
