@@ -21,13 +21,13 @@ export class UserManager {
     }
     removeUser(socketId) {
         const users = this.users.find(x => x.socket.id === socketId);
-        console.log("removed_users", users);
         this.users = this.users.filter(x => x.socket.id !== socketId);
         this.queue = this.queue.filter(x => x === socketId);
     }
     clearQueue() {
         console.log("inside clear queues");
         console.log(this.queue.length);
+        console.log("queue", this.queue);
         if (this.queue.length < 2) {
             return;
         }
@@ -40,18 +40,23 @@ export class UserManager {
             return;
         }
         console.log("creating room");
+        // console.log("user1",user1)
+        // console.log("user2",user2)   
         const room = this.roomManager.createRoom(user1, user2); //this room has two user and a roomId:{user1,user2}
+        console.log("room", room);
         this.clearQueue();
     }
     //   generate() {
     //     return GLOBAL_ROOM_ID++;
     //   }
     initHandlers(socket) {
-        socket.on("offer", ({ sdp, roomId }) => {
-            this.roomManager.onOffer(sdp, roomId);
+        socket.on("offer", ({ roomId, sdp }) => {
+            console.log("got it now asking offer from user2", roomId, sdp);
+            this.roomManager.onOffer(roomId, sdp);
         });
-        socket.on("accept", ({ sdp, roomId }) => {
-            this.roomManager.onAnswer(sdp, roomId);
+        socket.on("answer", ({ roomId, sdp }) => {
+            console.log("got it asking answer", roomId, sdp);
+            this.roomManager.onAnswer(roomId, sdp);
         });
         // User1 → Server → User2   (offer)
         // User2 → Server → User1   (answer)

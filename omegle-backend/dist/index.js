@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 import express from "express";
 import http from "http";
 const app = express();
-const server = http.createServer(http);
+const server = http.createServer(app);
 import { UserManager } from "./managers/UserManager.js";
 const io = new Server(server, {
     cors: {

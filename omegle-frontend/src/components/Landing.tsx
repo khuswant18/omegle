@@ -8,7 +8,7 @@ const Landing = () => {
   return (
     <div>
         <input type="text" onChange={(e)=>{setName(e.target.value)}}/>
-        <Link to={`/room/?name=${name}`} onClick={()=>{}}>Join</Link>
+        <Link to={`/room/?name=${name}`}>Join</Link> 
     </div> 
   )
 }
