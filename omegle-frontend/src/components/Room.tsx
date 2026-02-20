@@ -192,7 +192,7 @@ const Room = ({
     return () => {
       socket.disconnect();
     };
-  }, []);
+  });
 
   //////////
 

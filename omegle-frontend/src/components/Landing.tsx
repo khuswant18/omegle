@@ -34,17 +34,23 @@ const Landing = () => {
   };
 
   useEffect(() => {
-    if (videoRef && videoRef.current) {
-      getCam(); 
-    }
+    const initializeCamera = async () => {
+      if (videoRef && videoRef.current) {
+        await getCam(); 
+      }
+    };
+    initializeCamera();
   }, [videoRef]);  
 
   if (!joined) {
     return (
       <div>
         <video autoPlay ref={videoRef}></video>
+        <label htmlFor="name-input">Name:</label>
         <input 
+          id="name-input"
           type="text"
+          placeholder="Enter your name"
           onChange={(e) => {
             setName(e.target.value);
           }}
