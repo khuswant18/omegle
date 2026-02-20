@@ -30,6 +30,9 @@ io.on('connection', (socket:Socket) => {
   }) 
 });
 
+app.get('/',(req,res)=>{
+  res.send("Server is healthy")
+})
 
 server.listen(PORT, () => {
   console.log("server running at PORT",PORT);
