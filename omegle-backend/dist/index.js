@@ -12,7 +12,9 @@ const io = new Server(server, {
 const userManager = new UserManager();
 io.on('connection', (socket) => {
     console.log('a user connected');
-    userManager.addUser("randomName", socket);
+    socket.on("join", ({ name }) => {
+        userManager.addUser(name, socket);
+    });
     socket.on("disconnect", () => {
         userManager.removeUser(socket.id);
     });

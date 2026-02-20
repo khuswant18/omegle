@@ -10,44 +10,64 @@ export class RoomManager {
         console.log("roomId", roomId);
         this.rooms.set(roomId.toString(), {
             user1,
-            user2
+            user2,
         });
         user1.socket.emit("send-offer", {
-            roomId
+            // this is being sent to the frontend
+            roomId,
         });
-        // user2.socket.emit("send-offer",{ 
-        //     roomId
-        // })  
+        // user2.socket.emit("send-offer",{
+        //     roomId 
+        // })
         // also both the roomId are same as they both are in same room
+    }
+    // emit means sending
+    // on means listening
+    // io.emit sending to all
+    // socket.emit sending to only the client
+    onOffer(roomId, sdp, senderSocketId) {
+        console.log("inside onoffer");
+        const room = this.rooms.get(roomId);
+        if (!room) {
+            return;
+        }
+        const receivingUser = room.user1.socket.id === senderSocketId ? room.user2 : room.user1; // if sender is user1 then receive is user2 so that user2 will send the answer back to user1
+        receivingUser?.socket.emit("offer", {
+            sdp,
+            roomId,
+        });
+    }
+    // Server emit → Client on
+    // Client emit → Server on
+    // so whenever we do emit or on on server it goes to client
+    onAnswer(roomId, sdp, senderSocketId) {
+        console.log("inside onAnswer");
+        const room = this.rooms.get(roomId);
+        if (!room) {
+            return;
+        }
+        console.log("roomId", roomId);
+        console.log("senderSocketId", senderSocketId);
+        const receivingUser = room.user1.socket.id === senderSocketId ? room.user2 : room.user1; // now vice versa means receiving user is now user1 if it was not recieving in the offer part
+        // console.log("receivingUser",receivingUser)
+        receivingUser?.socket.emit("answer", {
+            sdp,
+            roomId,
+        });
+    }
+    onIceCandidates(roomId, senderSocketId, candidate, type) {
+        console.log("inside onIcecandidate");
+        const room = this.rooms.get(roomId);
+        console.log("roomId", roomId);
+        console.log("candidate", candidate);
+        if (!room) {
+            return;
+        }
+        const receivingUser = room.user1?.socket.id === senderSocketId ? room.user2 : room.user1;
+        receivingUser.socket.emit("add-ice-candidate", { candidate, roomId, type });
     }
     generate() {
         return GLOBAL_ROOM_ID++;
-    }
-    // emit means sending 
-    // on means listening 
-    // io.emit sending to all 
-    // socket.emit sending to only the client
-    onOffer(roomId, sdp) {
-        console.log("inside onOffer");
-        const user2 = this.rooms.get(roomId)?.user2;
-        console.log(user2?.socket.id);
-        console.log("user2 is " + user2);
-        user2?.socket.emit("offer", {
-            sdp,
-            roomId
-        });
-    }
-    onAnswer(roomId, sdp) {
-        console.log("inside onAnswer");
-        const user1 = this.rooms.get(roomId)?.user1;
-        console.log("user1 is " + user1);
-        // Server emit → Client on  
-        // Client emit → Server on
-        // so whenever we do emit or on on server it goes to client
-        user1?.socket.emit("answer", {
-            sdp,
-            roomId
-        });
     }
 }
 //# sourceMappingURL=RoomManager.js.map

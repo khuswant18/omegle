@@ -4,7 +4,7 @@ import { RoomManager } from "./RoomManager.js";
 export interface User {
   socket: Socket;
   name: string;
-}
+} 
 
 // let GLOBAL_ROOM_ID = 1;
 
@@ -20,25 +20,24 @@ export class UserManager {
   }
 
   addUser(name: string, socket: Socket) { 
-    this.users.push({
+    this.users.push({ 
       name, 
       socket,
-    });
+    }); 
     this.queue.push(socket.id);
     socket.send("lobby") 
     this.clearQueue();
     this.initHandlers(socket) // this is not triggering initHandler after this it is just that if client sends "offer" run this else "accept" run this 
-  }
-
+  } 
+ 
   removeUser(socketId:string) {
     const users = this.users.find(x=>x.socket.id===socketId) 
     this.users = this.users.filter(x=>x.socket.id!==socketId)
     this.queue = this.queue.filter(x=>x===socketId) 
-
   }
-
+ 
   clearQueue() { 
-    console.log("inside clear queues")
+    console.log("inside clear queues") 
     console.log(this.queue.length); 
     console.log("queue",this.queue) 
     if (this.queue.length < 2) {
@@ -60,9 +59,8 @@ export class UserManager {
     // console.log("user1",user1)
     // console.log("user2",user2)   
     const room = this.roomManager.createRoom(user1,user2) //this room has two user and a roomId:{user1,user2}
-    console.log("room",room) 
+    console.log("room",room)    
     this.clearQueue() 
-
 } 
 
 //   generate() {
@@ -71,15 +69,21 @@ export class UserManager {
 
   initHandlers(socket: Socket) {
     socket.on("offer", ({roomId,sdp }: { roomId: string, sdp: string }) => {
-      console.log("got it now asking offer from user2",roomId,sdp)
-      this.roomManager.onOffer(roomId,sdp);
-    });  
+      console.log("got it now asking offer from user2",roomId)
+      this.roomManager.onOffer(roomId,sdp,socket.id);
+    });   
     socket.on("answer", ({ roomId,sdp }: { roomId: string, sdp: string }) => {
-      console.log("got it asking answer",roomId,sdp)  
-      this.roomManager.onAnswer(roomId,sdp);
-    });  
+      console.log("got it asking answer",roomId)
+      this.roomManager.onAnswer(roomId,sdp,socket.id);  
+    });    
+
+    socket.on("add-ice-candidate",({candidate,roomId,type})=> {
+      console.log("inside add-ice-candidate")
+      console.log(candidate,roomId,type) 
+      this.roomManager.onIceCandidates(roomId,socket.id,candidate,type) 
+    }) 
  
     // User1 → Server → User2   (offer)
     // User2 → Server → User1   (answer)
-  }
+  } 
 }
