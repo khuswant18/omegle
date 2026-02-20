@@ -108,7 +108,7 @@ const Room = ({
 
     /////////
     socket.on("offer", async ({ roomId, sdp: remoteSdp }) => {
-      console.log("offer received");
+      console.log("offer received"); 
       console.log(roomId);
       setLobby(false);
       alert("send answer please");
@@ -135,13 +135,23 @@ const Room = ({
 
       const remoteStream = remoteStreamRef.current;
 
+      //Whenever the OTHER user sends me an audio or video track, give it to me
       pc.ontrack = e => {
         remoteStream.addTrack(e.track);
       };
 
-      await pc.setRemoteDescription(remoteSdp);
-      const sdp = await pc.createAnswer();
-      await pc.setLocalDescription(sdp);
+      await pc.setRemoteDescription(remoteSdp); //This tells your browser:codecs,tracks,directions,ICE credentials
+      const sdp = await pc.createAnswer();//Generate my response.
+      //Browser now decides:
+      // which codecs it supports
+      // how it will receive media
+      // its ICE ufrag/password 
+      await pc.setLocalDescription(sdp); //Save my answer locally and start ICE.
+      //After this line 
+      // Browser begins:
+      // ICE gathering
+      // and fires:
+      // pc.onicecandidate
 
       socket.emit("answer", {
         sdp, 
