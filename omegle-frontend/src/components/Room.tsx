@@ -8,7 +8,7 @@ const URL = import.meta.env.VITE_API_URL
 const Room = ({
   name,
   localAudioTrack,
-  localVideoTrack,
+  localVideoTrack, 
 }: {
   name: string;
   localAudioTrack: MediaStreamTrack | null;
