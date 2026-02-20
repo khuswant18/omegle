@@ -214,8 +214,6 @@ const Room = ({
         gap: "12px",
       }}>
         <div style={{ fontSize: "32px" }}>⏳</div>
-        <div>Finding someone to chat with...</div>
-        <div style={{ fontSize: "14px", color: "#999" }}>35,000+ people online</div>
       </div>
     );
   }
@@ -232,8 +230,7 @@ const Room = ({
     }}>
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}>🎥 omegle</span>
-        <span style={{ fontSize: "15px", color: "#555", fontStyle: "italic" }}>Talk to Strangers!</span>
+        <span style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}>🎥 just for you</span>
       </div>
 
       {/* Videos side by side */}
@@ -280,7 +277,7 @@ const Room = ({
 
       {/* Buttons */}
       <div style={{ display: "flex", gap: "12px" }}>
-        <button
+        {/* <button
           onClick={() => window.location.reload()}
           style={{
             padding: "12px 40px",
@@ -289,7 +286,7 @@ const Room = ({
             borderRadius: "8px", fontSize: "15px",
             fontWeight: "bold", cursor: "pointer",
           }}
-        >Next</button>
+        >Next</button> */}
         <button
           onClick={() => window.location.reload()}
           style={{
@@ -299,7 +296,7 @@ const Room = ({
             borderRadius: "8px", fontSize: "15px",
             fontWeight: "bold", cursor: "pointer",
           }}
-        >Stop</button>
+        >End</button>
       </div>
     </div>
   );

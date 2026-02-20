@@ -54,8 +54,7 @@ const Landing = () => {
       }}>
         {/* Header */}
         <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
-          <span style={{ fontSize: "32px", fontWeight: "bold", color: "#ff6600" }}>🎥 omegle</span>
-          <span style={{ fontSize: "18px", color: "#555", fontStyle: "italic" }}>Talk to Strangers!</span>
+          <span style={{ fontSize: "32px", fontWeight: "bold", color: "#ff6600" }}>Just for you</span>
         </div>
 
         {/* Camera preview */}
@@ -106,8 +105,6 @@ const Landing = () => {
             Start Chat
           </button>
         </div>
-
-        <p style={{ color: "#888", fontSize: "13px" }}>35,000+ online now</p>
       </div>
     );
   }
