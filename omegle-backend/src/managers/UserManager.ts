@@ -25,7 +25,7 @@ export class UserManager {
       socket,
     }); 
     this.queue.push(socket.id);
-    socket.send("lobby") 
+    socket.emit("lobby") 
     this.clearQueue();
     this.initHandlers(socket) // this is not triggering initHandler after this it is just that if client sends "offer" run this else "accept" run this 
   } 
@@ -33,7 +33,7 @@ export class UserManager {
   removeUser(socketId:string) {
     const users = this.users.find(x=>x.socket.id===socketId) 
     this.users = this.users.filter(x=>x.socket.id!==socketId)
-    this.queue = this.queue.filter(x=>x===socketId) 
+    this.queue = this.queue.filter(x=>x!==socketId) 
   }
  
   clearQueue() { 

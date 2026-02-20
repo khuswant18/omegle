@@ -70,11 +70,14 @@ const Room = ({
         
       };
 
-      const remoteStream = remoteStreamRef.current;
-
-      pc.ontrack = e => {
-        remoteStream.addTrack(e.track);
-      }
+      pc.ontrack = (e) => {
+        console.log("got remote track (sender)", e.track.kind);
+        remoteStreamRef.current.addTrack(e.track);
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = remoteStreamRef.current;
+          remoteVideoRef.current.play().catch(console.error);
+        }
+      };
 
       const offer = await pc.createOffer()
       await pc.setLocalDescription(offer)
@@ -129,18 +132,21 @@ const Room = ({
         } 
       };
 
-      const remoteStream = remoteStreamRef.current;
-
       //Whenever the OTHER user sends me an audio or video track, give it to me
-      pc.ontrack = e => {
-        remoteStream.addTrack(e.track);
+      pc.ontrack = (e) => {
+        console.log("got remote track (receiver)", e.track.kind);
+        remoteStreamRef.current.addTrack(e.track);
+        if (remoteVideoRef.current) {
+          remoteVideoRef.current.srcObject = remoteStreamRef.current;
+          remoteVideoRef.current.play().catch(console.error);
+        }
       };
 
       await pc.setRemoteDescription(remoteSdp); //This tells your browser:codecs,tracks,directions,ICE credentials
       const sdp = await pc.createAnswer();//Generate my response.
       //Browser now decides:
       // which codecs it supports
-      // how it will receive media
+      // how it will receive media 
       // its ICE ufrag/password 
       await pc.setLocalDescription(sdp); //Save my answer locally and start ICE.
       //After this line 
@@ -190,7 +196,7 @@ const Room = ({
     };
   }, [name]);
 
-  //////////
+  ////////// 
 
   useEffect(() => {
     if (localVideoRef.current && localVideoTrackRef.current) {
@@ -200,7 +206,7 @@ const Room = ({
       remoteVideoRef.current.srcObject = remoteStreamRef.current;
     }
   }, [lobby]); 
-
+ 
   if (lobby) {
     return (
       <div style={{
@@ -212,17 +218,17 @@ const Room = ({
         color: "#555",
         flexDirection: "column",
         gap: "12px",
-      }}>
+      }}> 
         <div style={{ fontSize: "32px" }}>⏳</div>
       </div>
-    );
+    ); 
   }
 
   return (
     <div style={{
-      display: "flex",
+      display: "flex", 
       flexDirection: "column",
-      alignItems: "center",
+      alignItems: "center", 
       justifyContent: "center",
       minHeight: "100vh",
       padding: "20px",
@@ -233,7 +239,6 @@ const Room = ({
         <span style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}>🎥 just for you</span>
       </div>
 
-      {/* Videos side by side */}
       <div style={{ display: "flex", gap: "16px" }}>
         {/* Remote video */}
         <div style={{
@@ -254,7 +259,6 @@ const Room = ({
           }}>Stranger</div>
         </div>
 
-        {/* Local video */}
         <div style={{
           width: "480px", height: "360px",
           background: "#222", borderRadius: "12px",
@@ -275,18 +279,17 @@ const Room = ({
         </div>
       </div>
 
-      {/* Buttons */}
       <div style={{ display: "flex", gap: "12px" }}>
-        {/* <button
-          onClick={() => window.location.reload()}
+        <button
+          onClick={() => window.location.reload()} 
           style={{
             padding: "12px 40px",
             background: "#3399ff",
             color: "white", border: "none",
             borderRadius: "8px", fontSize: "15px",
             fontWeight: "bold", cursor: "pointer",
-          }}
-        >Next</button> */}
+          }} 
+        >Next</button>
         <button
           onClick={() => window.location.reload()}
           style={{
@@ -296,9 +299,9 @@ const Room = ({
             borderRadius: "8px", fontSize: "15px",
             fontWeight: "bold", cursor: "pointer",
           }}
-        >End</button>
+        >End</button> 
       </div>
-    </div>
+    </div> 
   );
 };
 

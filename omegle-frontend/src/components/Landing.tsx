@@ -8,7 +8,6 @@ const Landing = () => {
   const [localVideoTrack, setLocalVideoTrack] =
     useState<MediaStreamTrack | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
-
   const [joined, setJoined] = useState(false);
   
   const getCam = async () => {
@@ -16,6 +15,7 @@ const Landing = () => {
       video: true,
       audio: true,
     }); 
+
     // MediaStream -> just a bridge between your computer and webrtc it contains video and audio track
     const videoTrack = stream.getVideoTracks()[0];
     const audioTrack = stream.getAudioTracks()[0];
@@ -24,7 +24,7 @@ const Landing = () => {
  
     if (!videoRef.current) {
       return;
-    } 
+    }  
 
     videoRef.current.srcObject = new MediaStream([videoTrack]);
     console.log("videoRef",videoRef)
@@ -57,7 +57,6 @@ const Landing = () => {
           <span style={{ fontSize: "32px", fontWeight: "bold", color: "#ff6600" }}>Just for you</span>
         </div>
 
-        {/* Camera preview */}
         <div style={{
           width: "480px",
           height: "320px",
@@ -74,7 +73,6 @@ const Landing = () => {
           />
         </div>
 
-        {/* Name input + join */}
         <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
           <input
             type="text"

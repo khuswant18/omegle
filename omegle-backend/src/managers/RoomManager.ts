@@ -12,7 +12,7 @@ export class RoomManager {
   constructor() {
     this.rooms = new Map<string, Room>();
   }
-
+ 
   createRoom(user1: User, user2: User) {
     console.log("inside createRoom");
     const roomId = this.generate().toString();
