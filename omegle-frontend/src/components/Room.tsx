@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from "react";
 // import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// const URL = "http://localhost:3000";
-const URL = import.meta.env.VITE_API_URL
+const URL = "http://localhost:3000";
+// const URL = import.meta.env.VITE_API_URL
 
 const Room = ({
   name,
@@ -17,11 +17,6 @@ const Room = ({
   // const [searchParams, setSearchParams] = useSearchParams();
   // const [socket, setSocket] = useState<null | Socket>(null);
   const [lobby, setLobby] = useState(true);
-  // const [sendingPc, setSendingPc] = useState<RTCPeerConnection | null>(null);
-  // const [remoteMediaStream, setRemoteMediaStream] =useState<MediaStream | null>(null);
-  // const [receivingPc, setReceivingPc] = useState<RTCPeerConnection | null>(null,);
-  // const [remoteAudioTrack, setRemoteAudioTrack] =useState<MediaStreamTrack | null>(null);
-  // const [remoteVideoTrack, setRemoteVideoTrack] =useState<MediaStreamTrack | null>(null);
 
   const remoteVideoRef = useRef<HTMLVideoElement>(null);
   const localVideoRef = useRef<HTMLVideoElement>(null);
@@ -207,16 +202,107 @@ const Room = ({
   }, [lobby]); 
 
   if (lobby) {
-    return <div>Waiting to connect you to someone</div>;
-  } 
+    return (
+      <div style={{
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        fontSize: "20px",
+        color: "#555",
+        flexDirection: "column",
+        gap: "12px",
+      }}>
+        <div style={{ fontSize: "32px" }}>⏳</div>
+        <div>Finding someone to chat with...</div>
+        <div style={{ fontSize: "14px", color: "#999" }}>35,000+ people online</div>
+      </div>
+    );
+  }
 
   return (
-    <div>
-      Hi {name}
-      <video autoPlay muted width={400} height={400} ref={localVideoRef} />
-      <video autoPlay width={400} height={400} ref={remoteVideoRef} />
+    <div style={{
+      display: "flex",
+      flexDirection: "column",
+      alignItems: "center",
+      justifyContent: "center",
+      minHeight: "100vh",
+      padding: "20px",
+      gap: "20px",
+    }}>
+      {/* Header */}
+      <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+        <span style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}>🎥 omegle</span>
+        <span style={{ fontSize: "15px", color: "#555", fontStyle: "italic" }}>Talk to Strangers!</span>
+      </div>
+
+      {/* Videos side by side */}
+      <div style={{ display: "flex", gap: "16px" }}>
+        {/* Remote video */}
+        <div style={{
+          width: "480px", height: "360px",
+          background: "#111", borderRadius: "12px",
+          overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          position: "relative",
+        }}>
+          <video
+            autoPlay
+            ref={remoteVideoRef}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+          <div style={{
+            position: "absolute", bottom: "10px", left: "12px",
+            color: "white", fontSize: "13px",
+            background: "rgba(0,0,0,0.5)", padding: "3px 10px", borderRadius: "6px",
+          }}>Stranger</div>
+        </div>
+
+        {/* Local video */}
+        <div style={{
+          width: "480px", height: "360px",
+          background: "#222", borderRadius: "12px",
+          overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+          position: "relative",
+        }}>
+          <video
+            autoPlay
+            muted
+            ref={localVideoRef}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+          <div style={{
+            position: "absolute", bottom: "10px", left: "12px",
+            color: "white", fontSize: "13px",
+            background: "rgba(0,0,0,0.5)", padding: "3px 10px", borderRadius: "6px",
+          }}>{name || "You"}</div>
+        </div>
+      </div>
+
+      {/* Buttons */}
+      <div style={{ display: "flex", gap: "12px" }}>
+        <button
+          onClick={() => window.location.reload()}
+          style={{
+            padding: "12px 40px",
+            background: "#3399ff",
+            color: "white", border: "none",
+            borderRadius: "8px", fontSize: "15px",
+            fontWeight: "bold", cursor: "pointer",
+          }}
+        >Next</button>
+        <button
+          onClick={() => window.location.reload()}
+          style={{
+            padding: "12px 40px",
+            background: "#ff4444",
+            color: "white", border: "none",
+            borderRadius: "8px", fontSize: "15px",
+            fontWeight: "bold", cursor: "pointer",
+          }}
+        >Stop</button>
+      </div>
     </div>
-  ); 
+  );
 };
 
-export default Room; 
+export default Room;

@@ -2,7 +2,6 @@ import { useState, useEffect, useRef } from "react";
 import Room from "./Room";
 
 const Landing = () => {
-
   const [name, setName] = useState("");
   const [localAudioTrack, setLocalAudioTrack] =
     useState<MediaStreamTrack | null>(null);
@@ -44,29 +43,76 @@ const Landing = () => {
 
   if (!joined) {
     return (
-      <div>
-        <video autoPlay ref={videoRef}></video>
-        <label htmlFor="name-input">Name:</label>
-        <input 
-          id="name-input"
-          type="text"
-          placeholder="Enter your name"
-          onChange={(e) => {
-            setName(e.target.value);
-          }}
-        />
-        <button
-          onClick={() => {
-            setJoined(true);
-          }}
-        >
-          Join
-        </button>
+      <div style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        gap: "20px",
+        padding: "20px",
+      }}>
+        {/* Header */}
+        <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "10px" }}>
+          <span style={{ fontSize: "32px", fontWeight: "bold", color: "#ff6600" }}>🎥 omegle</span>
+          <span style={{ fontSize: "18px", color: "#555", fontStyle: "italic" }}>Talk to Strangers!</span>
+        </div>
+
+        {/* Camera preview */}
+        <div style={{
+          width: "480px",
+          height: "320px",
+          background: "#222",
+          borderRadius: "12px",
+          overflow: "hidden",
+          boxShadow: "0 4px 20px rgba(0,0,0,0.2)",
+        }}>
+          <video
+            autoPlay
+            muted
+            ref={videoRef}
+            style={{ width: "100%", height: "100%", objectFit: "cover" }}
+          />
+        </div>
+
+        {/* Name input + join */}
+        <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
+          <input
+            type="text"
+            placeholder="Enter your name"
+            onChange={(e) => setName(e.target.value)}
+            style={{
+              padding: "12px 18px",
+              borderRadius: "8px",
+              border: "1px solid #ccc",
+              fontSize: "16px",
+              outline: "none",
+              width: "220px",
+            }}
+          />
+          <button
+            onClick={() => setJoined(true)}
+            style={{
+              padding: "12px 28px",
+              background: "#3399ff",
+              color: "white",
+              border: "none",
+              borderRadius: "8px",
+              fontSize: "16px",
+              fontWeight: "bold",
+              cursor: "pointer",
+            }}
+          >
+            Start Chat
+          </button>
+        </div>
+
+        <p style={{ color: "#888", fontSize: "13px" }}>35,000+ online now</p>
       </div>
     );
   }
 
-  return <Room name={name} localAudioTrack={localAudioTrack} localVideoTrack={localVideoTrack}/>
+  return <Room name={name} localAudioTrack={localAudioTrack} localVideoTrack={localVideoTrack} />;
 };
 
 export default Landing;
