@@ -45,7 +45,7 @@ const Room = ({
     ////////
     socket.on("send-offer", async ({ roomId }) => {
       console.log("send offer please");
-      alert("send offer please")  
+      // alert("send offer please")  
       setLobby(false);
       const pc = new RTCPeerConnection();
       pcRef.current = pc;
@@ -111,7 +111,7 @@ const Room = ({
       console.log("offer received"); 
       console.log(roomId);
       setLobby(false);
-      alert("send answer please");
+      // alert("send answer please");
       const pc = new RTCPeerConnection();
       pcRef.current = pc;
 
@@ -153,7 +153,7 @@ const Room = ({
       // and fires:
       // pc.onicecandidate
 
-      socket.emit("answer", {
+      socket.emit("answer", { 
         sdp, 
         roomId,
       });
@@ -175,7 +175,7 @@ const Room = ({
     socket.on("answer", async ({ roomId, sdp: remoteSdp }) => {
       console.log("from user1", roomId, remoteSdp);
       setLobby(false);
-      console.log("connection done");
+      console.log("connection done"); 
       // setSendingPc((pc) => {
       //   pc?.setRemoteDescription(remoteSdp);
       //   return pc;
@@ -192,7 +192,7 @@ const Room = ({
     return () => {
       socket.disconnect();
     };
-  });
+  }, []);
 
   //////////
 
@@ -207,7 +207,7 @@ const Room = ({
 
   if (lobby) {
     return <div>Waiting to connect you to someone</div>;
-  }
+  } 
 
   return (
     <div>

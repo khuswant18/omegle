@@ -36,7 +36,7 @@ const Landing = () => {
   useEffect(() => {
     const initializeCamera = async () => {
       if (videoRef && videoRef.current) {
-        await getCam(); 
+        getCam(); 
       }
     };
     initializeCamera();
