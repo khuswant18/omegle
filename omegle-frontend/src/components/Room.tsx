@@ -187,12 +187,12 @@ const Room = ({
     ////////
     socket.on("lobby", () => {
       setLobby(true);
-    });
+    }); 
 
     return () => {
       socket.disconnect();
     };
-  }, []);
+  }, [name]);
 
   //////////
 
