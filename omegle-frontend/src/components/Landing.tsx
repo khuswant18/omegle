@@ -20,7 +20,7 @@ const Landing = () => {
     const videoTrack = stream.getVideoTracks()[0];
     const audioTrack = stream.getAudioTracks()[0];
     setLocalVideoTrack(videoTrack);
-    setLocalAudioTrack(audioTrack); 
+    setLocalAudioTrack(audioTrack);  
  
     if (!videoRef.current) {
       return;

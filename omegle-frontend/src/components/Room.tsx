@@ -30,7 +30,7 @@ const Room = ({
     localVideoTrackRef.current = localVideoTrack;
   }, [localAudioTrack, localVideoTrack]);
   // function logout() {
-  //   const socket = io(URL); 
+  //   const socket = io(URL);
   //   socket.disconnect();
   // }
 
@@ -44,7 +44,33 @@ const Room = ({
       // alert("send offer please")
       setLobby(false);
       const pc = new RTCPeerConnection({
-        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+        iceServers: [
+          { urls: "stun:stun.l.google.com:19302" },
+
+          {
+            urls: "stun:stun.relay.metered.ca:80",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+        ],
       });
       pcRef.current = pc;
       // setSendingPc(pc);
@@ -79,6 +105,46 @@ const Room = ({
         }
       };
 
+      // pc.oniceconnectionstatechange = () => {
+      //   console.log("ICE connection state:", pc.iceConnectionState);
+      //   if (pc.iceConnectionState === "connected" || pc.iceConnectionState === "completed") {
+      //     pc.getStats().then(stats => {
+      //       stats.forEach(report => {
+      //         if (report.type === "candidate-pair" && report.state === "succeeded") {
+      //           console.log("Using:", report.localCandidateId, report.remoteCandidateId);
+      //           console.log("report",report)
+      //         }
+      //       });
+      //     });
+      //   }
+      // };
+
+      pc.oniceconnectionstatechange = async () => {
+        if (pc.iceConnectionState === "connected") {
+          const stats = await pc.getStats();
+
+          let selectedPair;
+
+          stats.forEach((report) => {
+            if (
+              report.type === "candidate-pair" &&
+              report.state === "succeeded" &&
+              report.nominated
+            ) {
+              selectedPair = report;
+            }
+          });
+
+          if (selectedPair) {
+            const local = stats.get(selectedPair.localCandidateId);
+            const remote = stats.get(selectedPair.remoteCandidateId);
+
+            console.log("LOCAL candidate type:", local.candidateType);
+            console.log("REMOTE candidate type:", remote.candidateType);
+          }
+        }
+      };
+
       const offer = await pc.createOffer();
       await pc.setLocalDescription(offer);
 
@@ -106,13 +172,13 @@ const Room = ({
 
     /////////
     socket.on("offer", async ({ roomId, sdp: remoteSdp }) => {
-      console.log("offer received"); 
+      console.log("offer received");
       console.log(roomId);
       setLobby(false);
       // alert("send answer please");
       const pc = new RTCPeerConnection({
         iceServers: [
-          { urls: "stun:stun.l.google.com:19302" }, 
+          { urls: "stun:stun.l.google.com:19302" },
 
           {
             urls: "stun:stun.relay.metered.ca:80",
@@ -136,7 +202,7 @@ const Room = ({
             urls: "turns:global.relay.metered.ca:443?transport=tcp",
             username: "bcc0c1a296b3d8ef3edf24c6",
             credential: "TKvwICLI6t6tr6Zq",
-          }, 
+          },
         ],
       });
 
@@ -155,7 +221,7 @@ const Room = ({
       //         username: "bcc0c1a296b3d8ef3edf24c6",
       //         credential: "TKvwICLI6t6tr6Zq",
       //       },
-      //       { 
+      //       {
       //         urls: "turn:global.relay.metered.ca:443",
       //         username: "bcc0c1a296b3d8ef3edf24c6",
       //         credential: "TKvwICLI6t6tr6Zq",
@@ -167,8 +233,6 @@ const Room = ({
       //       },
       //   ],
       // });
-
-    
 
       pcRef.current = pc;
 
@@ -188,7 +252,7 @@ const Room = ({
             type: "receiver",
           });
         }
-      };
+      }; 
 
       //Whenever the OTHER user sends me an audio or video track, give it to me
       pc.ontrack = (e) => {
@@ -200,6 +264,33 @@ const Room = ({
         }
       };
 
+      pc.oniceconnectionstatechange = async () => {
+        if (pc.iceConnectionState === "connected") {
+          const stats = await pc.getStats();
+
+          let selectedPair;
+
+          stats.forEach((report) => {
+            if (
+              report.type === "candidate-pair" &&
+              report.state === "succeeded" &&
+              report.nominated
+            ) {
+              selectedPair = report;
+            }
+          });
+
+          if (selectedPair) {
+            const local = stats.get(selectedPair.localCandidateId);
+            const remote = stats.get(selectedPair.remoteCandidateId);
+
+            console.log("LOCAL candidate type:", local.candidateType);
+            console.log("REMOTE candidate type:", remote.candidateType);
+          }
+        }
+      };
+
+
       await pc.setRemoteDescription(remoteSdp); //This tells your browser:codecs,tracks,directions,ICE credentials
       const sdp = await pc.createAnswer(); //Generate my response.
       //Browser now decides:
@@ -207,6 +298,7 @@ const Room = ({
       // how it will receive media
       // its ICE ufrag/password
       await pc.setLocalDescription(sdp); //Save my answer locally and start ICE.
+
       //After this line
       // Browser begins:
       // ICE gathering
