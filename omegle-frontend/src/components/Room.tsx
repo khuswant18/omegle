@@ -134,7 +134,7 @@ const Room = ({
               selectedPair = report;
             }
           });
-
+ 
           if (selectedPair) {
             const local: any = stats.get(selectedPair.localCandidateId);
             const remote: any = stats.get(selectedPair.remoteCandidateId);
