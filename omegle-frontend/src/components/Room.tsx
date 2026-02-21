@@ -2,8 +2,8 @@ import { useEffect, useState, useRef } from "react";
 // import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-const URL = "http://localhost:3000";
-// const URL = import.meta.env.VITE_API_URL;
+// const URL = "http://localhost:3000";
+const URL = import.meta.env.VITE_API_URL;
 
 const Room = ({
   name,
