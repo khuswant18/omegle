@@ -2,13 +2,13 @@ import { useEffect, useState, useRef } from "react";
 // import { useSearchParams } from "react-router-dom";
 import { io } from "socket.io-client";
 
-// const URL = "http://localhost:3000";
-const URL = import.meta.env.VITE_API_URL
+const URL = "http://localhost:3000";
+// const URL = import.meta.env.VITE_API_URL;
 
 const Room = ({
   name,
   localAudioTrack,
-  localVideoTrack, 
+  localVideoTrack,
 }: {
   name: string;
   localAudioTrack: MediaStreamTrack | null;
@@ -23,15 +23,15 @@ const Room = ({
   const pcRef = useRef<RTCPeerConnection | null>(null);
   const localAudioTrackRef = useRef<MediaStreamTrack | null>(localAudioTrack);
   const localVideoTrackRef = useRef<MediaStreamTrack | null>(localVideoTrack);
-  const remoteStreamRef = useRef<MediaStream>(new MediaStream());  
+  const remoteStreamRef = useRef<MediaStream>(new MediaStream());
 
   useEffect(() => {
     localAudioTrackRef.current = localAudioTrack;
-    localVideoTrackRef.current = localVideoTrack; 
+    localVideoTrackRef.current = localVideoTrack;
   }, [localAudioTrack, localVideoTrack]);
   // function logout() {
   //   const socket = io(URL);
-  //   socket.disconnect(); 
+  //   socket.disconnect();
   // }
 
   useEffect(() => {
@@ -41,9 +41,11 @@ const Room = ({
     ////////
     socket.on("send-offer", async ({ roomId }) => {
       console.log("send offer please");
-      // alert("send offer please")  
+      // alert("send offer please")
       setLobby(false);
-      const pc = new RTCPeerConnection();
+      const pc = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
       pcRef.current = pc;
       // setSendingPc(pc);
       console.log("localAudioTrack", localAudioTrackRef.current);
@@ -52,7 +54,7 @@ const Room = ({
         pc.addTrack(localAudioTrackRef.current);
       }
       if (localVideoTrackRef.current) {
-        console.log("adding video track"); 
+        console.log("adding video track");
         pc.addTrack(localVideoTrackRef.current);
       }
 
@@ -63,11 +65,9 @@ const Room = ({
           socket.emit("add-ice-candidate", {
             candidate: e.candidate,
             roomId: roomId,
-            type: "sender",  
+            type: "sender",
           });
-
         }
-        
       };
 
       pc.ontrack = (e) => {
@@ -79,13 +79,13 @@ const Room = ({
         }
       };
 
-      const offer = await pc.createOffer()
-      await pc.setLocalDescription(offer)
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
 
-      socket.emit("offer",{
-        sdp:offer,
-        roomId
-      })
+      socket.emit("offer", {
+        sdp: offer,
+        roomId,
+      });
 
       //WHAT they will send (audio/video, codecs, tracks) → SDP
       // HOW to reach each other (IP/ports) → ICE
@@ -102,16 +102,17 @@ const Room = ({
       //     roomId,
       //   });
       // };
-
     });
 
     /////////
     socket.on("offer", async ({ roomId, sdp: remoteSdp }) => {
-      console.log("offer received"); 
+      console.log("offer received");
       console.log(roomId);
       setLobby(false);
       // alert("send answer please");
-      const pc = new RTCPeerConnection();
+      const pc = new RTCPeerConnection({
+        iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+      });
       pcRef.current = pc;
 
       if (localAudioTrackRef.current) {
@@ -126,10 +127,10 @@ const Room = ({
         if (e.candidate) {
           socket.emit("add-ice-candidate", {
             candidate: e.candidate,
-            roomId, 
+            roomId,
             type: "receiver",
           });
-        } 
+        }
       };
 
       //Whenever the OTHER user sends me an audio or video track, give it to me
@@ -143,20 +144,20 @@ const Room = ({
       };
 
       await pc.setRemoteDescription(remoteSdp); //This tells your browser:codecs,tracks,directions,ICE credentials
-      const sdp = await pc.createAnswer();//Generate my response.
+      const sdp = await pc.createAnswer(); //Generate my response.
       //Browser now decides:
       // which codecs it supports
-      // how it will receive media 
-      // its ICE ufrag/password 
+      // how it will receive media
+      // its ICE ufrag/password
       await pc.setLocalDescription(sdp); //Save my answer locally and start ICE.
-      //After this line 
+      //After this line
       // Browser begins:
       // ICE gathering
       // and fires:
       // pc.onicecandidate
 
-      socket.emit("answer", { 
-        sdp, 
+      socket.emit("answer", {
+        sdp,
         roomId,
       });
     });
@@ -177,7 +178,7 @@ const Room = ({
     socket.on("answer", async ({ roomId, sdp: remoteSdp }) => {
       console.log("from user1", roomId, remoteSdp);
       setLobby(false);
-      console.log("connection done"); 
+      console.log("connection done");
       // setSendingPc((pc) => {
       //   pc?.setRemoteDescription(remoteSdp);
       //   return pc;
@@ -189,119 +190,167 @@ const Room = ({
     ////////
     socket.on("lobby", () => {
       setLobby(true);
-    }); 
+    });
 
     return () => {
       socket.disconnect();
     };
   }, [name]);
 
-  ////////// 
+  //////////
 
   useEffect(() => {
     if (localVideoRef.current && localVideoTrackRef.current) {
-      localVideoRef.current.srcObject = new MediaStream([localVideoTrackRef.current]);
+      localVideoRef.current.srcObject = new MediaStream([
+        localVideoTrackRef.current,
+      ]);
     }
     if (remoteVideoRef.current) {
       remoteVideoRef.current.srcObject = remoteStreamRef.current;
     }
-  }, [lobby]); 
- 
+  }, [lobby]);
+
   if (lobby) {
     return (
-      <div style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minHeight: "100vh",
-        fontSize: "20px",
-        color: "#555",
-        flexDirection: "column",
-        gap: "12px",
-      }}> 
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "100vh",
+          fontSize: "20px",
+          color: "#555",
+          flexDirection: "column",
+          gap: "12px",
+        }}
+      >
         <div style={{ fontSize: "32px" }}>⏳</div>
       </div>
-    ); 
+    );
   }
 
   return (
-    <div style={{
-      display: "flex", 
-      flexDirection: "column",
-      alignItems: "center", 
-      justifyContent: "center",
-      minHeight: "100vh",
-      padding: "20px",
-      gap: "20px",
-    }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "100vh",
+        padding: "20px",
+        gap: "20px",
+      }}
+    >
       {/* Header */}
       <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-        <span style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}>🎥 just for you</span>
+        <span
+          style={{ fontSize: "26px", fontWeight: "bold", color: "#ff6600" }}
+        >
+          🎥 just for you
+        </span>
       </div>
 
       <div style={{ display: "flex", gap: "16px" }}>
         {/* Remote video */}
-        <div style={{
-          width: "480px", height: "360px",
-          background: "#111", borderRadius: "12px",
-          overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-          position: "relative",
-        }}>
+        <div
+          style={{
+            width: "480px",
+            height: "360px",
+            background: "#111",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+            position: "relative",
+          }}
+        >
           <video
             autoPlay
             ref={remoteVideoRef}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
-          <div style={{
-            position: "absolute", bottom: "10px", left: "12px",
-            color: "white", fontSize: "13px",
-            background: "rgba(0,0,0,0.5)", padding: "3px 10px", borderRadius: "6px",
-          }}>Stranger</div>
+          <div
+            style={{
+              position: "absolute",
+              bottom: "10px",
+              left: "12px",
+              color: "white",
+              fontSize: "13px",
+              background: "rgba(0,0,0,0.5)",
+              padding: "3px 10px",
+              borderRadius: "6px",
+            }}
+          >
+            Stranger
+          </div>
         </div>
 
-        <div style={{
-          width: "480px", height: "360px",
-          background: "#222", borderRadius: "12px",
-          overflow: "hidden", boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
-          position: "relative",
-        }}>
+        <div
+          style={{
+            width: "480px",
+            height: "360px",
+            background: "#222",
+            borderRadius: "12px",
+            overflow: "hidden",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.3)",
+            position: "relative",
+          }}
+        >
           <video
             autoPlay
             muted
             ref={localVideoRef}
             style={{ width: "100%", height: "100%", objectFit: "cover" }}
           />
-          <div style={{
-            position: "absolute", bottom: "10px", left: "12px",
-            color: "white", fontSize: "13px",
-            background: "rgba(0,0,0,0.5)", padding: "3px 10px", borderRadius: "6px",
-          }}>{name || "You"}</div>
+          <div
+            style={{
+              position: "absolute",
+              bottom: "10px",
+              left: "12px",
+              color: "white",
+              fontSize: "13px",
+              background: "rgba(0,0,0,0.5)",
+              padding: "3px 10px",
+              borderRadius: "6px",
+            }}
+          >
+            {name || "You"}
+          </div>
         </div>
       </div>
 
       <div style={{ display: "flex", gap: "12px" }}>
         <button
-          onClick={() => window.location.reload()} 
+          onClick={() => window.location.reload()}
           style={{
             padding: "12px 40px",
             background: "#3399ff",
-            color: "white", border: "none",
-            borderRadius: "8px", fontSize: "15px",
-            fontWeight: "bold", cursor: "pointer",
-          }} 
-        >Next</button>
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "15px",
+            fontWeight: "bold",
+            cursor: "pointer",
+          }}
+        >
+          Next
+        </button>
         <button
           onClick={() => window.location.reload()}
           style={{
             padding: "12px 40px",
             background: "#ff4444",
-            color: "white", border: "none",
-            borderRadius: "8px", fontSize: "15px",
-            fontWeight: "bold", cursor: "pointer",
+            color: "white",
+            border: "none",
+            borderRadius: "8px",
+            fontSize: "15px",
+            fontWeight: "bold",
+            cursor: "pointer",
           }}
-        >End</button> 
+        >
+          End
+        </button>
       </div>
-    </div> 
+    </div>
   );
 };
 
