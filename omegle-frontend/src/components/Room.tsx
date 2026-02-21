@@ -30,7 +30,7 @@ const Room = ({
     localVideoTrackRef.current = localVideoTrack;
   }, [localAudioTrack, localVideoTrack]);
   // function logout() {
-  //   const socket = io(URL);
+  //   const socket = io(URL); 
   //   socket.disconnect();
   // }
 
