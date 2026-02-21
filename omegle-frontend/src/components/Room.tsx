@@ -123,9 +123,9 @@ const Room = ({
         if (pc.iceConnectionState === "connected") {
           const stats = await pc.getStats();
 
-          let selectedPair;
+          let selectedPair: any;
 
-          stats.forEach((report) => {
+          stats.forEach((report: any) => {
             if (
               report.type === "candidate-pair" &&
               report.state === "succeeded" &&
@@ -136,11 +136,11 @@ const Room = ({
           });
 
           if (selectedPair) {
-            const local = stats.get(selectedPair.localCandidateId);
-            const remote = stats.get(selectedPair.remoteCandidateId);
+            const local: any = stats.get(selectedPair.localCandidateId);
+            const remote: any = stats.get(selectedPair.remoteCandidateId);
 
-            console.log("LOCAL candidate type:", local.candidateType);
-            console.log("REMOTE candidate type:", remote.candidateType);
+            console.log("LOCAL candidate type:", local?.candidateType);
+            console.log("REMOTE candidate type:", remote?.candidateType);
           }
         }
       };
@@ -268,9 +268,9 @@ const Room = ({
         if (pc.iceConnectionState === "connected") {
           const stats = await pc.getStats();
 
-          let selectedPair;
+          let selectedPair: any;
 
-          stats.forEach((report) => {
+          stats.forEach((report: any) => {
             if (
               report.type === "candidate-pair" &&
               report.state === "succeeded" &&
@@ -281,11 +281,11 @@ const Room = ({
           });
 
           if (selectedPair) {
-            const local = stats.get(selectedPair.localCandidateId);
-            const remote = stats.get(selectedPair.remoteCandidateId);
+            const local: any = stats.get(selectedPair.localCandidateId);
+            const remote: any = stats.get(selectedPair.remoteCandidateId);
 
-            console.log("LOCAL candidate type:", local.candidateType);
-            console.log("REMOTE candidate type:", remote.candidateType);
+            console.log("LOCAL candidate type:", local?.candidateType);
+            console.log("REMOTE candidate type:", remote?.candidateType);
           }
         }
       };

@@ -22,7 +22,7 @@ const Landing = () => {
     setLocalVideoTrack(videoTrack);
     setLocalAudioTrack(audioTrack);  
  
-    if (!videoRef.current) {
+    if (!videoRef.current) { 
       return;
     }  
 
