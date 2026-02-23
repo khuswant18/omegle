@@ -43,7 +43,6 @@ const Room = ({
       console.log("send offer please");
       // alert("send offer please")
       setLobby(false);
-      const turn = await fetch("api/turn").then((r) => r.json());
       const pc = new RTCPeerConnection({
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
@@ -51,32 +50,31 @@ const Room = ({
           {
             urls: "stun:stun.relay.metered.ca:80",
           },
-          turn
-          // {
-          //   urls: "turn:free.expressturn.com:3478",
-          //   username: "000000002086933491",
-          //   credential: "R/3XAKKdDKvOQOru3p8i/AaIGuU=",
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:80",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:80?transport=tcp",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:443",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turns:global.relay.metered.ca:443?transport=tcp",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
+          {
+            urls: "turn:free.expressturn.com:3478",
+            username: "000000002086933491",
+            credential: "R/3XAKKdDKvOQOru3p8i/AaIGuU=",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
         ],
       });
       pcRef.current = pc;
@@ -182,8 +180,6 @@ const Room = ({
       console.log("offer received");
       console.log(roomId);
       setLobby(false);
-      // alert("send answer please");
-      const turn = await fetch("api/turn").then((r) => r.json());
       const pc = new RTCPeerConnection({ 
         iceServers: [
           { urls: "stun:stun.l.google.com:19302" },
@@ -191,32 +187,31 @@ const Room = ({
           {
             urls: "stun:stun.relay.metered.ca:80",
           },
-          turn 
-          // {
-          //   urls: "turn:free.expressturn.com:3478",
-          //   username: "000000002086933491",
-          //   credential: "R/3XAKKdDKvOQOru3p8i/AaIGuU="
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:80",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:80?transport=tcp",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turn:global.relay.metered.ca:443",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
-          // {
-          //   urls: "turns:global.relay.metered.ca:443?transport=tcp",
-          //   username: "bcc0c1a296b3d8ef3edf24c6",
-          //   credential: "TKvwICLI6t6tr6Zq",
-          // },
+          {
+            urls: "turn:free.expressturn.com:3478",
+            username: "000000002086933491",
+            credential: "R/3XAKKdDKvOQOru3p8i/AaIGuU="
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:80?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turn:global.relay.metered.ca:443",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
+          {
+            urls: "turns:global.relay.metered.ca:443?transport=tcp",
+            username: "bcc0c1a296b3d8ef3edf24c6",
+            credential: "TKvwICLI6t6tr6Zq",
+          },
         ],
       });
 

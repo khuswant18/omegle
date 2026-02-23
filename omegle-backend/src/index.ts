@@ -18,13 +18,14 @@ const io = new Server(server,{
     } 
 });
 
-app.use("/api/turn",(req,res)=>{
-  res.json({
-    urls: "turn:free.expressturn.com:3478",
-    username: process.env.TURN_USERNAME,
-    credential: process.env.TURN_PASSWORD 
-  })
-})
+// app.use("/api/turn",(req,res)=>{
+//   res.json({
+//     urls: "turn:free.expressturn.com:3478",
+//     username: process.env.TURN_USERNAME,
+//     credential: process.env.TURN_PASSWORD 
+//   })
+// })
+
 const userManager = new UserManager() 
 io.on('connection', (socket:Socket) => {
   console.log('a user connected');
